@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var app = require('../app');
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -50,6 +51,13 @@ router.post('/addTweet', function(req, res) {
 
     }
   });
+});
+
+router.get('/wc', function(req, res) {
+  var matches = app.matches;
+  console.log(matches);
+
+  res.render('worldcup', {title: "World Cup 2014"});
 });
 
 module.exports = router;

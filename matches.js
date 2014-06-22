@@ -1,23 +1,57 @@
-var request = require("request");
+var request = require('request');
+// var http = require('http');
 
 var url = "http://worldcup.sfg.io/matches/today"
 
-var matches, callback;
+var matches;
+var EventEmitter = require('events').EventEmitter;
+var matches_emitter = new EventEmitter();
 
-module.exports = function(url, json, callback) {
+module.exports = function(callback) {
 
-  request({
+  if (matches == undefined) {
+    matches_emitter.on("matches-ready", function() {
+      // console.log("emitter callback");
+      callback(matches)
+
+    });
+  } else{
+    // console.log("else callback");
+    callback(matches);
+
+  }
+}
+
+request({
       url: url,
       json: true
-  }, function (error, response, body) {
+    }, function (error, response, body) {
 
-      if (!error && response.statusCode === 200) {
+
+
+    if (!error && response.statusCode === 200) {
           // console.log(body) // Print the json response
-          matches = body;
-          callback();
-      }
-  })
-}
+
+        matches = body;
+        matches_emitter.emit("matches-ready");
+        // console.log("matches ready");
+
+    }
+
+});
+
+
+
+
+
+// http.get(url, function(res) {
+//
+//
+//
+//   matches = res;
+//
+// });
+
 
 
 // request({
@@ -30,7 +64,7 @@ module.exports = function(url, json, callback) {
 //         matches = body;
 //
 //     }
-// })
+// });
 //
 //
 // var foo, callback;
