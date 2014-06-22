@@ -1,0 +1,8 @@
+extends layout
+
+block content
+  h1= title
+  form#formAddTweet(name="addTweet",method="post",action="/addtweet")
+    input#inputTweetContent(type="text", placeholder="130 chars", name="content")
+    input#inputTweetUser(type="text", placeholder="Username", name="user")
+    button#btnSubmit(type="submit") submit

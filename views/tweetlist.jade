@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  h1.
+    Tweet List
+  ul
+    each tweet, i in tweetlist
+      li
+        a(href="http://twitter.com/#{tweet.user}")= tweet.user
