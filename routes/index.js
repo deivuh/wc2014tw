@@ -67,10 +67,22 @@ get_matches(function (matches) {
 router.get('/wc', function(req, res) {
 
   var db = req.db;
+  var collection = db.get('tweetcollection');
+  collection.find({team: "CHI"}, {}, function(error, docs) {
+
+    if(error) {
+      console.log("error: %s", e);
+    } else {
+
+      // res.render('worldcup', {worldcup:docs});
+      // console.log('THIS');
+      // console.log(docs);
+      res.render('worldcup', {title: "World Cup 2014", matches:today_matches, worldcup:docs});
+    }
+  });
 
 
 
-  res.render('worldcup', {title: "World Cup 2014", matches:today_matches});
 });
 
 module.exports = router;

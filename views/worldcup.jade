@@ -6,5 +6,7 @@ block content
   ul
     each match, i in matches
       li
-        a(href="http://twitter.com/#{match.match_number}")= match.home_team.country
-        p #{match.away_team.country}
+        p #{match.home_team.country} vs. #{match.away_team.country}
+
+        //a(href="http://twitter.com/#{match.match_number}")= match.home_team.country +  + match.away_team.country}
+  p #{worldcup.length}

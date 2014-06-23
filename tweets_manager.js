@@ -26,7 +26,7 @@ get_matches(function (matches) {
     teams.push(away_team);
   }
 
-  console.log("team size %s", teams.length)
+  // console.log("team size %s", teams.length)
 
   // Search stream for each team's hashflag
   // for (var i in teams) {
@@ -38,19 +38,88 @@ get_matches(function (matches) {
     teams_hts.push(team_ht);
   }
 
-    console.log("team hts %s", teams_hts);
+  console.log("team hts %s", teams_hts);
+
+  // Database collection
+  var collection = db.get('tweetcollection');
+
+  twitter.stream('filter', {track:teams_hts.toString()}, function(stream) {
+      stream.on('data', function(data) {
+          // console.log(util.inspect(data));
+          // console.log('%s ----- %s', team_ht, data.user.location);
+
+          // console.log("Tweet data %j", data);
+
+          // --------Compare twitter user location to country
+          var country_code;
+
+          for (var i in country_list) {
+            // By 'official' name
+            if(data.user.location.indexOf(country_list[i].name) > -1) {
+              // console.log(country_list[i].cca3+  " by name");
+              country_code = country_list[i].cca3;
+            } else if(country_list[i].nativeName.length > 3) {
+              // By native name
+              if(data.user.location.indexOf(country_list[i].nativeName) > -1) {
+                // console.log(country_list[i].cca3 + " by native");
+                country_code = country_list[i].cca3;
+              } else if(country_list[i].capital.length > 3) {
+                // By capital
+                if(data.user.location.indexOf(country_list[i].capital) > -1) {
+                  // console.log(country_list[i].cca3 + " by capital");
+                  country_code = country_list[i].cca3;
+                } else {
+                  // By alternate spelling
+                  for (var j in country_list[i].altSpellings) {
+                    if(country_list[i].altSpellings[j].length > 3) {
+
+                      if(data.user.location.indexOf(country_list[i].altSpellings[j]) > -1) {
+                        // console.log(country_list[i].cca + " by alt spelling " + country_list[i].altSpellings[j]);
+                        country_code = country_list[i].cca3;
+                      }
+                    }
+                  }
+                  // If none
+                  country_code = "";
+                }
+              }
+            }
+          }
+
+          // ----------Finish location comparison
+
+          for (var i in teams_hts) {
+            // console.log("%s HT: %s %d", data.text, teams_hts[i], data.text.indexOf(teams_hts[i]) > -1)
+            if(data.text.indexOf(teams_hts[i]) > -1) {
+
+              collection.insert({
+                "content" : data.text,
+                "user" : data.user.screen_name,
+                "location" : data.user.location,
+                "country" : country_code,
+                "team" : teams_hts[i].substring(1)
+              }, function (err, doc) {
+                if (err){
+                  console.log("Problem adding tweet");
+                }
+                else {
+                  // console.log("Added %s", teams_hts[i]);
+                  // console.log(doc);
+                }
+              });
+
+            }
+          }
 
 
+// UC
+          // console.log(data.text);
+          //
 
-    twitter.stream('filter', {track:teams_hts.toString()}, function(stream) {
-        stream.on('data', function(data) {
-            // console.log(util.inspect(data));
-            // console.log('%s ----- %s', team_ht, data.user.location);
-            console.log(data.text);
-        });
-        // Disconnect stream after five seconds
-        // setTimeout(stream.destroy, 5000);
-    });
+      });
+      // Disconnect stream after five seconds
+      // setTimeout(stream.destroy, 5000);
+  });
 
 
 
@@ -59,6 +128,11 @@ get_matches(function (matches) {
 
 });
 
+
+
+
+
+var get_matche
 
 
 // for (team in teams) {
