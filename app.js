@@ -6,15 +6,12 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 
-var mongo = require('mongodb');
-var monk = require('monk');
-var db = monk('localhost:27017/wc2014tw');
+var db = require('./database');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
-
-var get_matches = require('./matches');
-var twitter = require('./twitter');
+var tweets_manager = require('./tweets_manager');
+var util = require('util');
 
 var app = express();
 
@@ -69,44 +66,8 @@ app.use(function(err, req, res, next) {
     });
 });
 
-// Parse country list
-
-// var fs = require('fs');
-// var country_list = JSON.parse(__)
-
-var country_list = require('./country_list.json');
-
-// console.log(country_list[0]);
-
-var today_matches;
-
-get_matches(function (matches) {
-  today_matches = matches;
-});
 
 
 
-
-
-
-
-
-twitter.stream('filter', {track:'#GER'}, function(stream) {
-    stream.on('data', function(data) {
-        // console.log(util.inspect(data));
-        console.log('#GER ----- ' + data.user.location);
-    });
-    // Disconnect stream after five seconds
-    // setTimeout(stream.destroy, 5000);
-});
-
-twitter.stream('filter', {track:'#ARG'}, function(stream) {
-    stream.on('data', function(data) {
-        // console.log(util.inspect(data));
-        console.log('#ARG ----- ' + data.user.location);
-    });
-    // Disconnect stream after five seconds
-    // setTimeout(stream.destroy, 5000);
-});
 
 module.exports = app;

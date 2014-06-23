@@ -27,7 +27,9 @@ request({
       json: true
     }, function (error, response, body) {
 
-
+    if (error) {
+      console.log("Request error");
+    }
 
     if (!error && response.statusCode === 200) {
           // console.log(body) // Print the json response

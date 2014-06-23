@@ -53,11 +53,24 @@ router.post('/addTweet', function(req, res) {
   });
 });
 
-router.get('/wc', function(req, res) {
-  var matches = app.matches;
-  console.log(matches);
 
-  res.render('worldcup', {title: "World Cup 2014"});
+var get_matches = require('../matches');
+var today_matches;
+
+
+get_matches(function (matches) {
+  today_matches = matches;
+
+});
+
+//  GET worldcup
+router.get('/wc', function(req, res) {
+
+  var db = req.db;
+
+
+
+  res.render('worldcup', {title: "World Cup 2014", matches:today_matches});
 });
 
 module.exports = router;

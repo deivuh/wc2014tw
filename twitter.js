@@ -1,6 +1,6 @@
 // Twitter setup
-var util = require('util'),
-    twitter = require('twitter');
+
+var twitter = require('twitter');
 var twit = new twitter({
     consumer_key: 'X54bsJ1XtA8P8OpmZBrMiDnOb',
     consumer_secret: '9lBLZqmRVck2FGtO26NdoY3oSXF02P0yfC005KoOf9IiN5VAgd',

@@ -3,3 +3,8 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
+  ul
+    each match, i in matches
+      li
+        a(href="http://twitter.com/#{match.match_number}")= match.home_team.country
+        p #{match.away_team.country}
